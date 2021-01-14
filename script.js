@@ -5,6 +5,7 @@ const image1 = document.getElementById('img1');
 const image2 = document.getElementById('img2');
 const image3 = document.getElementById('img3');
 const textBox = document.getElementById('text-box');
+let isLight = true;
 
 // Dark or Light Images
 function imageMode(color) {
@@ -13,35 +14,61 @@ function imageMode(color) {
     image3.src = `img/undraw_Personal_site_${color}.svg`;
 }
 
-// Dark Mode Styles
-function darkMode() {
-    nav.style.backgroundColor = 'rgb(0 0 0 / 50%)';
-    textBox.style.backgroundColor = 'rgb(255 255 255 / 50%)';
-    toggleIcon.children[0].textContent = 'Dark Mode';
-    toggleIcon.children[1].classList.replace('fa-sun', 'fa-moon');
-    imageMode('dark');
-    
+function toggleDarkLightMode(isLight) {
+    isLight ? document.documentElement.setAttribute('data-theme', 'light') :  document.documentElement.setAttribute('data-theme', 'dark');;
+    nav.style.backgroundColor = isLight ? 'rgb(255 255 255 / 50%)' : 'rgb(0 0 0 / 50%)';
+    textBox.style.backgroundColor = isLight ? 'rgb(0 0 0 / 50%)' : 'rgb(255 255 255 / 50%)';
+    toggleIcon.children[0].textContent = isLight ? 'Light Mode' : 'Dark Mode';
+    isLight ? toggleIcon.children[1].classList.replace('fa-moon', 'fa-sun') : toggleIcon.children[1].classList.replace('fa-sun', 'fa-moon');
+    isLight ? imageMode('light') : imageMode('dark');;
+
 }
 
-// Light Mode Styles
-function lightMode() {
-    nav.style.backgroundColor = 'rgb(255 255 255 / 50%)';
-    textBox.style.backgroundColor = 'rgb(0 0 0 / 50%)';
-    toggleIcon.children[0].textContent = 'Light Mode';
-    toggleIcon.children[1].classList.replace('fa-moon', 'fa-sun');
-    imageMode('light');
-}
+// // Dark Mode Styles
+// function darkMode() {
+//     document.documentElement.setAttribute('data-theme', 'dark');
+    
+//     nav.style.backgroundColor = 'rgb(0 0 0 / 50%)';
+//     textBox.style.backgroundColor = 'rgb(255 255 255 / 50%)';
+//     toggleIcon.children[0].textContent = 'Dark Mode';
+//     toggleIcon.children[1].classList.replace('fa-sun', 'fa-moon');
+//     imageMode('dark');
+    
+// }
+
+// // Light Mode Styles
+// function lightMode() {
+//     document.documentElement.setAttribute('data-theme', 'light');
+//     nav.style.backgroundColor = 'rgb(255 255 255 / 50%)';
+//     textBox.style.backgroundColor = 'rgb(0 0 0 / 50%)';
+//     toggleIcon.children[0].textContent = 'Light Mode';
+//     toggleIcon.children[1].classList.replace('fa-moon', 'fa-sun');
+//     imageMode('light');
+// }
 
 // Switch Theme Dynamically
 function switchTheme(event) {
     if (event.target.checked) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        darkMode();
+        localStorage.setItem('theme', 'dark');
+        isLight = false;
+        toggleDarkLightMode(isLight);
     } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-        lightMode();
+        localStorage.setItem('theme', 'light');
+        isLight = true;
+        toggleDarkLightMode(isLight);
     }
 }
 
 // Event Listener
 toggleSwitch.addEventListener('change', switchTheme);
+
+//Check local storage for theme
+const currentTheme = localStorage.getItem('theme');
+if (currentTheme) {
+    localStorage.setItem('theme', currentTheme);
+    if (currentTheme === 'dark') {
+        toggleSwitch.checked = true;
+        isLight = false;
+        toggleDarkLightMode(isLight);
+    }
+}
